@@ -1,0 +1,13 @@
+__pycache__/
+.cache/
+.venv/
+venv/
+env/
+
+test_data/
+outputs/
+
+~/.cache/
+models/
+whisper-models/
+ctranslate2_models/
