@@ -11,3 +11,5 @@ outputs/
 models/
 whisper-models/
 ctranslate2_models/
+
+poetry.lock
