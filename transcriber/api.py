@@ -85,7 +85,7 @@ def _resolve_quality(
 # High-level function: extracts audio -> transcribes -> writes .srt and .json
 def transcribe_file(
         input_path: Path,
-        model_name: str = "medium",
+        model_name: str = "small",
         device: str = "cuda",
         compute_type: str = "float16",
         language: Optional[str] = None,

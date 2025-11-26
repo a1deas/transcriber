@@ -32,7 +32,7 @@ def run(
         help = "Path to JSON-file",
     ),
     model: str = typer.Option(
-        "medium",
+        "small",
         "--model",
         "-m",
         help = "Faster-whisper model's name (small, medium, large, ... or path)",
