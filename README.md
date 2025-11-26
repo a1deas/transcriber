@@ -24,12 +24,16 @@ poetry install
 ```
 
 ## Usage
-Basic transcription
+Basic transcription(if there is no problem with cudNN):
 ```text
-poetry run transcriber input.mp4 \
-  --srt outputs/subs.srt \
-  --json outputs/subs.json
+poetry run transcriber input.mp4 --srt outputs/subs.srt --json outputs/subs.json
 ```
+
+If you have issues with cuda libraries: 
+```text
+./run.sh input.mp4.mp4 --srt outputs/subs.srt --json outputs/subs.json --model small --quality fast
+```
+
 | Option             | Description                                                   |
 | ------------------ | ------------------------------------------------------------- |
 | `input_path`       | Path to input audio/video file (positional)                   |
@@ -40,6 +44,7 @@ poetry run transcriber input.mp4 \
 | `--compute-type`   | Precision: `float16`, `float32`, `int8`, `int8_float16`, etc. |
 | `--language`, `-l` | Force language (`en`, `ru`, `fr`, etc.). Default: auto        |
 | `--task`, `-t`     | `transcribe` or `translate`                                   |
+| `--quality`, `-q`  | `fast`, `balanced` or `quality`                               |
 
 ## Integration(Python API)
 ```text
