@@ -5,10 +5,9 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-from rich import print
 from rich.console import Console
 
-from .process import transcribe
+from .api import transcribe_file
 
 console = Console()
 
@@ -20,46 +19,52 @@ app = typer.Typer(
 def run(
     input_path: Path = typer.Argument(
         ...,
-        help="Path to input video/audio file",
+        help = "Path to input video/audio file",
     ),
     output_srt: Path = typer.Option(
         "output.srt",
         "--srt",
-        help="Path to SRT-file",
+        help = "Path to SRT-file",
     ),
     output_json: Path = typer.Option(
         "output.json",
         "--json",
-        help="Path to JSON-file",
+        help = "Path to JSON-file",
     ),
     model: str = typer.Option(
         "medium",
         "--model",
         "-m",
-        help="Faster-whisper model's name (small, medium, large, ... or path)",
+        help = "Faster-whisper model's name (small, medium, large, ... or path)",
     ),
     device: str = typer.Option(
         "cuda",
         "--device",
         "-d",
-        help="cuda / cpu",
+        help = "cuda / cpu",
     ),
     compute_type: str = typer.Option(
         "float16",
         "--compute-type",
-        help="float16 / float32 / int8 / int8_float16 / int8_bfloat16",
+        help = "float16 / float32 / int8 / int8_float16 / int8_bfloat16",
     ),
     language: Optional[str] = typer.Option(
         None,
         "--language",
         "-l",
-        help="Language code ('en', 'ru', 'fr', etc.). If not set — auto.",
+        help = "Language code ('en', 'ru', 'fr', etc.). If not set — auto.",
     ),
     task: str = typer.Option(
         "transcribe",
         "--task",
         "-t",
-        help="transcribe / translate",
+        help = "transcribe / translate",
+    ),
+    quality: str = typer.Option(
+        "balanced",
+        "--quality",
+        "-q",
+        help = "Quality profile: fast / balanced / quality",
     ),
 ):
     if not input_path.exists():
@@ -68,16 +73,21 @@ def run(
     if task not in ("transcribe", "translate"):
         raise typer.BadParameter(f"Task must be either 'transcribe' or 'translate'")
     
+    if quality not in ("fast", "balanced", "quality"):
+        raise typer.BadParameter("Quality must be 'fast', 'balanced' or 'quality'")
+
     console.log(f"[bold cyan] Transcriber[/] running on [yellow]{input_path}[/]")
-    transcription = transcribe(
-        input_path=input_path,
-        output_srt = output_srt,
-        output_json=output_json,
-        model_name= model,
+
+    transcription = transcribe_file(
+        input_path = input_path,
+        model_name = model,
         device = device,
-        compute_type=compute_type,
-        language=language,
-        task=task, # type: ignore[arg-type]
+        compute_type = compute_type,
+        language = language,
+        task = task,          # type: ignore[arg-type]
+        quality = quality,  # type: ignore[arg-type]
+        output_srt = output_srt,
+        output_json = output_json,
     )
 
     console.log(

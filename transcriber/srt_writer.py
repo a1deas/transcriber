@@ -1,7 +1,6 @@
 # transcriber/transcriber/srt_writer.py
 from pathlib import Path
-from typing import Iterable
-
+from typing import Iterable, Mapping, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,17 +16,22 @@ def format_timestamp(timestamp: float) -> str:
 
     return f"{hours:02d}:{minutes:02d}:{seconds:02d},{millis:03d}"
 
-def write_srt(segments: Iterable[dict], output_path: Path) -> None:
+def write_srt(
+    segments: Iterable[dict], 
+    output_path: Path
+) -> None:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents = True, exist_ok = True)
 
-    logger.info(f"[SRT Writer] Trying to write subtitles...")
+    logger.info(f"[srt] Trying to write subtitles...")
 
     lines = []
-    for idx, segment in enumerate(segments, start = 1):
-        start = format_timestamp(segment["start"])
-        end = format_timestamp(segment["end"])
-        text = segment["text"].strip()
+    idx = 1
+
+    for segment in segments:
+        start = format_timestamp(float(segment["start"]))
+        end = format_timestamp(float(segment["end"]))
+        text = str(segment["text"]).strip()
 
         if not text:
             continue
@@ -36,6 +40,8 @@ def write_srt(segments: Iterable[dict], output_path: Path) -> None:
         lines.append(f"{start} --> {end}")
         lines.append(text)
         lines.append("")
+        idx += 1
     
-    logger.info(f"[SRT Writer] Done! Subtitles written to {output_path}")
     output_path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info(f"[SRT Writer] Done! Wrote {idx - 1} entries. "
+                f"Subtitles written to {output_path}")

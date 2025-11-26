@@ -1,8 +1,8 @@
 # transcriber/transcriber/ffmpeg_utils.py
 from pathlib import Path
-from typing import Optional
-import ffmpeg
 import logging
+
+import ffmpeg
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ def extract_wav(
         ac: int = 1,
 ) -> Path: 
     
-    logger.info(f"[Audio Extraction] Trying to extract WAV from {input_path}")
+    logger.info(f"[audio] Trying to extract WAV from {input_path}")
 
     input_path = Path(input_path)
     output_path = Path(output_path)
@@ -23,8 +23,7 @@ def extract_wav(
     output_path.parent.mkdir(parents = True, exist_ok = True)
 
     (
-        ffmpeg
-        .input(str(input_path))
+        ffmpeg.input(str(input_path))
         .output(
             str(output_path),
             ac = ac, 
@@ -35,6 +34,9 @@ def extract_wav(
         .run(quiet = True)
     )
 
-    logger.info(f"[Audio Extraction] Done! Audio extracted to {output_path} | sample rate = {sample_rate} | ac = {ac}")
+    logger.info(
+        f"[audio] Done! Audio extracted to {output_path} | "
+        f"sample_rate = {sample_rate} | ac = {ac}"
+    )
 
     return output_path
