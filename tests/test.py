@@ -9,9 +9,9 @@ def test(tmp_path: Path):
         {"start": 1.5, "end": 3.0, "text": "World", "lang": "en"},
     ]
 
-    out = tmp_path / test.srt
+    out = tmp_path / "test.srt"
     write_srt(segments, out)
 
     content = out.read_text(encoding = "utf-8")
     assert "Hello" in content
-    assert "world" in content
+    assert "World" in content
