@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional, List, Dict, Any
 
+import os
+
 from faster_whisper import WhisperModel
 from rich.console import Console
 
@@ -114,6 +116,13 @@ def transcribe_file(
             compute_type = compute_type,
         )
     except Exception as e:
+        force_gpu = os.environ.get("CUTSMITH_FORCE_GPU", "").strip().lower() in ("1", "true", "yes", "on")
+        force_gpu = force_gpu or (os.environ.get("TRANSCRIBER_FORCE_GPU", "").strip().lower() in ("1", "true", "yes", "on"))
+        if device == "cuda" and force_gpu:
+            raise RuntimeError(
+                f"Transcriber is configured to require GPU, but CUDA init failed: {e}"
+            ) from e
+
         console.log(f"[yellow] Failed to load model on {device}: {e}. Falling back to CPU.[/]")
         model = _get_model(
             model_name = model_name,
